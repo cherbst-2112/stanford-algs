@@ -5,7 +5,7 @@ require 'rgl/dot'
 require 'pry'
 
 def scc(list)
-  g = RGL::DirectedAdjacencyGraph.new
+  # g = RGL::DirectedAdjacencyGraph.new
   # dg_rev = RGL::DirectedAdjacencyGraph.new
   dg = {}
   dg_rev = {}
@@ -18,16 +18,14 @@ def scc(list)
     dg[u] << v
     dg_rev[v] << u
 
-    g.add_edge(u, v)
+    # g.add_edge(u, v)
   end
 
-  g.write_to_graphic_file('jpg')
+  # g.write_to_graphic_file('jpg')
 
   @visited = Set.new
-  @order = []
+  @stack = []
   @leaders = {}
-
-  @depth = 0
 
   for node in dg_rev.keys.sort.reverse
     dfs(dg_rev, node)
@@ -36,21 +34,12 @@ def scc(list)
   @visited = Set.new
   @leaders = {}
 
-  # for node in @order.keys.sort_by { |a,b| @order[a] <=> @order[b] }.reverse
-  #   @leader = node
-  #   dfs(dg, node)
-  # end
+  while !@stack.empty?
+    @leader = @stack.pop
+    dfs(dg, @leader)
+  end
 
-  # puts @order.keys.sort_by { |a,b| @order[a] <=> @order[b] }.inspect
-
-  # puts @leaders.inspect
-
-  puts @order.inspect
-
-  #   dfs(dg, node, node)
-  # end
-
-  # puts @order.inspect
+  return @leaders.map { |l| l.size + 1 }.sort[0..4]
 end
 
 def dfs(graph, node)
@@ -58,14 +47,14 @@ def dfs(graph, node)
 
   @visited << node
 
-  @leaders[node] = @leader
+  @leaders[@leader] ||= Set.new
+  @leaders[@leader] << node
 
   for nei in graph[node]
     dfs(graph, nei)
   end
 
-  @depth += 1
-  @order[node] = @depth
+  @stack << node
 end
 
 require "minitest/autorun"
