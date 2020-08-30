@@ -13,6 +13,8 @@ def scc(list)
   list.each do |e|
     u, v = e.split.map(&:to_i)
     dg[u] ||= Set.new
+    dg[v] ||= Set.new
+    dg_rev[u] ||= Set.new
     dg_rev[v] ||= Set.new
 
     dg[u] << v
@@ -39,6 +41,8 @@ def scc(list)
     dfs(dg, @leader)
   end
 
+  # puts @leaders.inspect
+
   return @leaders.keys.map { |k| @leaders[k].size }.sort.reverse
 end
 
@@ -61,14 +65,8 @@ require "minitest/autorun"
 
 describe 'scc' do
   # specify do
-  #   # TODO I get 1112 but this is not correct
-  #   assert_equal -1, min_cut(File.read('/Users/chris/Projects/dojo/min_cut.txt').split("\n"))
+  #   assert_equal -1, scc(File.read('/Users/chris/Projects/dojo/SCC.txt').split("\n"))
   # end
-
-  # specify do
-  #   assert_equal -1, scc(File.read('/Users/chris/Projects/dojo/SCC.txt').split("\n")[0..100])
-  # end
-
 
   specify do
     assert_equal [11,10,5,4,1], scc(File.read('input_mostlyCycles_10_32.txt').split("\n"))
