@@ -5,32 +5,32 @@ require 'rgl/dot'
 require 'pry'
 
 def scc(list)
-  # g = RGL::DirectedAdjacencyGraph.new
+  graph = RGL::DirectedAdjacencyGraph.new
   # dg_rev = RGL::DirectedAdjacencyGraph.new
-  dg = {}
-  dg_rev = {}
+  # dg = {}
+  # dg_rev = {}
 
   list.each do |e|
     u, v = e.split.map(&:to_i)
-    dg[u] ||= Set.new
-    dg[v] ||= Set.new
-    dg_rev[u] ||= Set.new
-    dg_rev[v] ||= Set.new
+    # dg[u] ||= Set.new
+    # dg[v] ||= Set.new
+    # dg_rev[u] ||= Set.new
+    # dg_rev[v] ||= Set.new
 
-    dg[u] << v
-    dg_rev[v] << u
+    # dg[u] << v
+    # dg_rev[v] << u
 
-    # g.add_edge(u, v)
+    graph.add_edge(u, v)
   end
 
-  # g.write_to_graphic_file('jpg')
+  graph.write_to_graphic_file('jpg')
 
   @visited = Set.new
   @stack = []
   @leaders = {}
 
-  for node in dg_rev.keys.sort.reverse
-    dfs(dg_rev, node)
+  for node in graph.vertices.sort.reverse
+    dfs(graph.reverse, node)
   end
 
   @visited = Set.new
@@ -38,10 +38,8 @@ def scc(list)
 
   while !@stack.empty?
     @leader = @stack.pop
-    dfs(dg, @leader)
+    dfs(graph, @leader)
   end
-
-  # puts @leaders.inspect
 
   return @leaders.keys.map { |k| @leaders[k].size }.sort.reverse
 end
@@ -54,7 +52,7 @@ def dfs(graph, node)
   @leaders[@leader] ||= Set.new
   @leaders[@leader] << node
 
-  for nei in graph[node]
+  for nei in graph.adjacent_vertices(node)
     dfs(graph, nei)
   end
 
@@ -64,9 +62,9 @@ end
 require "minitest/autorun"
 
 describe 'scc' do
-  # specify do
-  #   assert_equal -1, scc(File.read('/Users/chris/Projects/dojo/SCC.txt').split("\n"))
-  # end
+  specify do
+    assert_equal -1, scc(File.read('SCC.txt').split("\n"))
+  end
 
   specify do
     # TODO this does need to amand two zeros to the end, but that's OK for now
