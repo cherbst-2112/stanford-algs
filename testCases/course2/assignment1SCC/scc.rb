@@ -75,6 +75,7 @@ describe 'scc' do
 
   specify do
     examples = [
+      'base_case',
       # 'mostlyCycles_10_32', 
       # 'mostlyCycles_11_32', 
       'mostlyCycles_12_32', 
@@ -139,7 +140,7 @@ describe 'scc' do
       # 'mostlyCycles_66_320000', 
       # 'mostlyCycles_67_320000', 
       # 'mostlyCycles_68_320000', 
-      # 'mostlyCycles_6_16', 
+      'mostlyCycles_6_16', 
       'mostlyCycles_7_16', 
       # 'mostlyCycles_8_16', 
       # 'mostlyCycles_9_32'
