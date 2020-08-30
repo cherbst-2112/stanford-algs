@@ -23,14 +23,19 @@ def scc(list)
     graph.add_edge(u, v)
   end
 
-  graph.write_to_graphic_file('jpg')
+  # graph.write_to_graphic_file('jpg')
 
   @visited = Set.new
   @stack = []
   @leaders = {}
 
+  reversed = graph.reverse
+
   for node in graph.vertices.sort.reverse
-    dfs(graph.reverse, node)
+    @leader = node  
+    @leaders[@leader] = 0
+
+    dfs(reversed, node)
   end
 
   @visited = Set.new
@@ -38,10 +43,12 @@ def scc(list)
 
   while !@stack.empty?
     @leader = @stack.pop
+    @leaders[@leader] ||= 0
+
     dfs(graph, @leader)
   end
 
-  return @leaders.keys.map { |k| @leaders[k].size }.sort.reverse
+  return @leaders.values.sort.reverse[0..4]
 end
 
 def dfs(graph, node)
@@ -49,10 +56,10 @@ def dfs(graph, node)
 
   @visited << node
 
-  @leaders[@leader] ||= Set.new
-  @leaders[@leader] << node
+  @leaders[@leader] += 1
 
   for nei in graph.adjacent_vertices(node)
+    next if @visited.include?(nei)
     dfs(graph, nei)
   end
 
@@ -62,12 +69,15 @@ end
 require "minitest/autorun"
 
 describe 'scc' do
+  # specify do
+  #   assert_equal -1, scc(File.read('SCC.txt').split("\n"))
+  # end
+
   specify do
-    assert_equal -1, scc(File.read('SCC.txt').split("\n"))
+    assert_equal [4,2,2,0,0], scc(File.read('input_mostlyCycles_1_8.txt').split("\n"))
   end
 
   specify do
-    # TODO this does need to amand two zeros to the end, but that's OK for now
-    assert_equal [4,2,2], scc(File.read('input_mostlyCycles_1_8.txt').split("\n"))
+    assert_equal [11,10,5,4,1], scc(File.read('input_mostlyCycles_10_32.txt').split("\n"))
   end
 end
