@@ -39,7 +39,7 @@ def scc(list)
     dfs(dg, @leader)
   end
 
-  return @leaders.map { |l| l.size + 1 }.sort[0..4]
+  return @leaders.keys.map { |k| @leaders[k].size }.sort.reverse
 end
 
 def dfs(graph, node)
@@ -71,7 +71,6 @@ describe 'scc' do
 
 
   specify do
-    # assert_equal [11,10,5,4,1], scc(File.read('input_mostlyCycles_10_32.txt').split("\n"))
-    assert_equal [3,3,3,0,0], scc(File.read('input_mostlyCycles_10_32.txt').split("\n"))
+    assert_equal [11,10,5,4,1], scc(File.read('input_mostlyCycles_10_32.txt').split("\n"))
   end
 end
