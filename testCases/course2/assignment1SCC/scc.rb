@@ -25,7 +25,7 @@ def scc(list)
 
   # graph.write_to_graphic_file('jpg')
 
-  # # this does it with the rgl lib, but does not work with large inputs
+  # # # this does it with the rgl lib, but does not work with large inputs
   # components = {}
 
   # graph.strongly_connected_components.comp_map.each_pair do |node, component|
@@ -45,7 +45,7 @@ def scc(list)
   order = []
   visited = Set.new
 
-  for node in graph.vertices
+  for node in (1..graph.vertices.max)
     next if visited.include?(node)
 
     stack << node
@@ -60,10 +60,15 @@ def scc(list)
       end
 
       # TODO not sure why this is using the forward version of the graph, but OK
-      for nei in graph.adjacent_vertices(s)
-        if !visited.include?(nei)
-          stack << nei
+      if graph.vertices.include?(s)
+        for nei in graph.adjacent_vertices(s)
+          if !visited.include?(nei)
+            stack << nei
+          end
         end
+      else
+        # if we do not have any vertices, this is an isolated node and still needs to come up in the order
+        order << s
       end
     end
   end
@@ -89,8 +94,10 @@ def scc(list)
       visited << s
       t += 1
 
-      for nei in graph_reverse.adjacent_vertices(s)
-        stack << nei unless visited.include?(nei)
+      if graph.vertices.include?(s)
+        for nei in graph_reverse.adjacent_vertices(s)
+          stack << nei unless visited.include?(nei)
+        end
       end
     end
 
@@ -127,11 +134,11 @@ describe 'scc' do
   specify do
     examples = [
       'base_case',
-      # 'mostlyCycles_10_32', 
-      # 'mostlyCycles_11_32', 
+      'mostlyCycles_10_32', 
+      'mostlyCycles_11_32', 
       'mostlyCycles_12_32', 
       'mostlyCycles_13_64', 
-      # 'mostlyCycles_14_64', 
+      'mostlyCycles_14_64', 
       'mostlyCycles_15_64', 
       'mostlyCycles_16_64', 
       'mostlyCycles_17_128', 
@@ -140,7 +147,7 @@ describe 'scc' do
       'mostlyCycles_1_8', 
       'mostlyCycles_20_128', 
       'mostlyCycles_21_200', 
-      # 'mostlyCycles_22_200', 
+      'mostlyCycles_22_200', 
       'mostlyCycles_23_200', 
       'mostlyCycles_24_200', 
       'mostlyCycles_25_400', 
@@ -159,7 +166,7 @@ describe 'scc' do
       'mostlyCycles_37_3200', 
       'mostlyCycles_38_3200', 
       'mostlyCycles_39_3200', 
-      # 'mostlyCycles_3_8', 
+      'mostlyCycles_3_8', 
       # 'mostlyCycles_40_3200', 
       # 'mostlyCycles_41_6400', 
       # 'mostlyCycles_42_6400', 
@@ -170,7 +177,7 @@ describe 'scc' do
       # 'mostlyCycles_47_12800', 
       # 'mostlyCycles_48_12800', 
       # 'mostlyCycles_49_20000', 
-      # 'mostlyCycles_4_8', 
+      'mostlyCycles_4_8', 
       # 'mostlyCycles_50_20000', 
       # 'mostlyCycles_51_20000', 
       # 'mostlyCycles_52_20000', 
@@ -181,7 +188,7 @@ describe 'scc' do
       # 'mostlyCycles_57_80000', 
       # 'mostlyCycles_58_80000', 
       # 'mostlyCycles_59_80000', 
-      # 'mostlyCycles_5_16', 
+      'mostlyCycles_5_16', 
       # 'mostlyCycles_60_80000', 
       # 'mostlyCycles_61_160000', 
       # 'mostlyCycles_62_160000', 
@@ -191,10 +198,10 @@ describe 'scc' do
       # 'mostlyCycles_66_320000', 
       # 'mostlyCycles_67_320000', 
       # 'mostlyCycles_68_320000', 
-      # 'mostlyCycles_6_16', 
+      'mostlyCycles_6_16', 
       'mostlyCycles_7_16', 
-      # 'mostlyCycles_8_16', 
-      # 'mostlyCycles_9_32'
+      'mostlyCycles_8_16', 
+      'mostlyCycles_9_32'
     ]
 
     for e in examples
