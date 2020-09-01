@@ -31,7 +31,7 @@ def scc(list)
 
   reversed = graph.reverse
 
-  for node in graph.vertices.sort.reverse
+  for node in (1..graph.vertices.max).to_a
     @leader = node  
     @leaders[@leader] = 0
 
@@ -58,9 +58,11 @@ def dfs(graph, node)
 
   @leaders[@leader] += 1
 
-  for nei in graph.adjacent_vertices(node)
-    next if @visited.include?(nei)
-    dfs(graph, nei)
+  if graph.vertices.include?(node)
+    for nei in graph.adjacent_vertices(node)
+      next if @visited.include?(nei)
+      dfs(graph, nei)
+    end
   end
 
   @stack << node
@@ -76,11 +78,11 @@ describe 'scc' do
   specify do
     examples = [
       'base_case',
-      # 'mostlyCycles_10_32', 
-      # 'mostlyCycles_11_32', 
+      'mostlyCycles_10_32', 
+      'mostlyCycles_11_32', 
       'mostlyCycles_12_32', 
       'mostlyCycles_13_64', 
-      # 'mostlyCycles_14_64', 
+      'mostlyCycles_14_64', 
       'mostlyCycles_15_64', 
       'mostlyCycles_16_64', 
       'mostlyCycles_17_128', 
@@ -89,7 +91,7 @@ describe 'scc' do
       'mostlyCycles_1_8', 
       'mostlyCycles_20_128', 
       'mostlyCycles_21_200', 
-      # 'mostlyCycles_22_200', 
+      'mostlyCycles_22_200', 
       'mostlyCycles_23_200', 
       'mostlyCycles_24_200', 
       'mostlyCycles_25_400', 
@@ -108,8 +110,8 @@ describe 'scc' do
       'mostlyCycles_37_3200', 
       'mostlyCycles_38_3200', 
       'mostlyCycles_39_3200', 
-      # 'mostlyCycles_3_8', 
-      # 'mostlyCycles_40_3200', 
+      'mostlyCycles_3_8', 
+      'mostlyCycles_40_3200', 
       'mostlyCycles_41_6400', 
       'mostlyCycles_42_6400', 
       'mostlyCycles_43_6400', 
@@ -119,31 +121,31 @@ describe 'scc' do
       'mostlyCycles_47_12800', 
       'mostlyCycles_48_12800', 
       'mostlyCycles_49_20000', 
-      # 'mostlyCycles_4_8', 
+      'mostlyCycles_4_8', 
       'mostlyCycles_50_20000', 
       'mostlyCycles_51_20000', 
       'mostlyCycles_52_20000', 
       'mostlyCycles_53_40000', 
-      # 'mostlyCycles_54_40000', 
-      # 'mostlyCycles_55_40000', 
-      # 'mostlyCycles_56_40000', 
-      # 'mostlyCycles_57_80000', 
-      # 'mostlyCycles_58_80000', 
-      # 'mostlyCycles_59_80000', 
-      # 'mostlyCycles_5_16', 
-      # 'mostlyCycles_60_80000', 
-      # 'mostlyCycles_61_160000', 
-      # 'mostlyCycles_62_160000', 
-      # 'mostlyCycles_63_160000', 
-      # 'mostlyCycles_64_160000', 
-      # 'mostlyCycles_65_320000', 
-      # 'mostlyCycles_66_320000', 
-      # 'mostlyCycles_67_320000', 
-      # 'mostlyCycles_68_320000', 
+      'mostlyCycles_54_40000', 
+      'mostlyCycles_55_40000', 
+      'mostlyCycles_56_40000', 
+      'mostlyCycles_57_80000', 
+      'mostlyCycles_58_80000', 
+      'mostlyCycles_59_80000', 
+      'mostlyCycles_5_16', 
+      'mostlyCycles_60_80000', 
+      'mostlyCycles_61_160000', 
+      'mostlyCycles_62_160000', 
+      'mostlyCycles_63_160000', 
+      'mostlyCycles_64_160000', 
+      'mostlyCycles_65_320000', 
+      'mostlyCycles_66_320000', 
+      'mostlyCycles_67_320000', 
+      'mostlyCycles_68_320000', 
       'mostlyCycles_6_16', 
       'mostlyCycles_7_16', 
-      # 'mostlyCycles_8_16', 
-      # 'mostlyCycles_9_32'
+      'mostlyCycles_8_16', 
+      'mostlyCycles_9_32'
     ]
 
     for e in examples
