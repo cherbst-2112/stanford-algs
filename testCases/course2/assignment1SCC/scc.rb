@@ -7,121 +7,42 @@ require 'pry'
 
 def scc(list)
   graph = RGL::DirectedAdjacencyGraph.new
-  # dg = {}
-  # dg_rev = {}
 
   list.each do |e|
     u, v = e.split.map(&:to_i)
-    # dg[u] ||= Set.new
-    # dg[v] ||= Set.new
-    # dg_rev[u] ||= Set.new
-    # dg_rev[v] ||= Set.new
 
-    # dg[u] << v
-    # dg_rev[v] << u
-
-    graph.add_edge(u, v)
+    graph.add_edge(v, u)
   end
 
-  # graph.write_to_graphic_file('jpg')
+  graph.write_to_graphic_file('jpg')
 
-  # # # this does it with the rgl lib, but does not work with large inputs
-  # components = {}
+  # this does it with the rgl lib, but does not work with large inputs
+  components = {}
 
-  # graph.strongly_connected_components.comp_map.each_pair do |node, component|
-  #   components[component] ||= 0
-  #   components[component] += 1
-  # end
+  graph.strongly_connected_components.comp_map.each_pair do |node, component|
+    components[component] ||= 0
+    components[component] += 1
+  end
 
-  # result = components.values.sort.reverse[0..4]
+  # binding.pry
 
-  # while result.length < 5
-  #   result << 0
-  # end
+  for i in 1..(graph.vertices.max)
+    next if components[i]
 
-  # return result
-
-  stack = []
-  order = []
-  visited = Set.new
-
-  for node in (1..graph.vertices.max)
-    next if visited.include?(node)
-
-    stack << node
-    visited << node
-
-    while !stack.empty?
-      s = stack.pop
-
-      if !visited.include?(s)
-        order << s
-        visited << s
-      end
-
-      # TODO not sure why this is using the forward version of the graph, but OK
-      if graph.vertices.include?(s)
-        for nei in graph.adjacent_vertices(s)
-          if !visited.include?(nei)
-            stack << nei
-          end
-        end
-      else
-        # if we do not have any vertices, this is an isolated node and still needs to come up in the order
-        order << s
-      end
+    if !graph.vertices.include?(i)
+      components[i] ||= 1
     end
   end
 
-  visited = Set.new
-  stack = []
-  t = 0
-  scc = Hash.new(0)
+  result = components.values.sort.reverse[0..4]
 
-  graph_reverse = graph.reverse
-
-  while !order.empty?
-    i = order.pop
-    # puts [__LINE__, i].inspect
-
-    stack << i
-
-    while !stack.empty?
-      s = stack.pop
-
-      next if visited.include?(s)
-
-      visited << s
-      t += 1
-
-      if graph.vertices.include?(s)
-        for nei in graph_reverse.adjacent_vertices(s)
-          stack << nei unless visited.include?(nei)
-        end
-      end
-    end
-
-    scc[i] = t
-    t = 0
+  while result.length < 5
+    result << 0
   end
 
-  return scc.values.sort.reverse[0..4]
+  return result
 end
 
-def dfs(graph, node)
-  return if @visited.include?(node)
-
-  @visited << node
-
-  @leaders[@leader] += 1
-
-  for nei in graph[node]
-    next if @visited.include?(nei)
-    dfs(graph, nei)
-  end
-
-  @stack << node
-end
 
 require "minitest/autorun"
 
@@ -133,7 +54,15 @@ describe 'scc' do
 
   specify do
     examples = [
-      'base_case',
+      'mostlyCycles_1_8', 
+      'mostlyCycles_2_8', 
+      'mostlyCycles_3_8', 
+      'mostlyCycles_4_8', 
+      'mostlyCycles_5_16', 
+      'mostlyCycles_6_16', 
+      'mostlyCycles_7_16', 
+      'mostlyCycles_8_16', 
+      'mostlyCycles_9_32',
       'mostlyCycles_10_32', 
       'mostlyCycles_11_32', 
       'mostlyCycles_12_32', 
@@ -144,7 +73,6 @@ describe 'scc' do
       'mostlyCycles_17_128', 
       'mostlyCycles_18_128', 
       'mostlyCycles_19_128', 
-      'mostlyCycles_1_8', 
       'mostlyCycles_20_128', 
       'mostlyCycles_21_200', 
       'mostlyCycles_22_200', 
@@ -155,7 +83,6 @@ describe 'scc' do
       'mostlyCycles_27_400', 
       'mostlyCycles_28_400', 
       'mostlyCycles_29_800', 
-      'mostlyCycles_2_8', 
       'mostlyCycles_30_800', 
       'mostlyCycles_31_800', 
       'mostlyCycles_32_800', 
@@ -166,7 +93,6 @@ describe 'scc' do
       'mostlyCycles_37_3200', 
       'mostlyCycles_38_3200', 
       'mostlyCycles_39_3200', 
-      'mostlyCycles_3_8', 
       'mostlyCycles_40_3200', 
       'mostlyCycles_41_6400', 
       'mostlyCycles_42_6400', 
@@ -177,7 +103,6 @@ describe 'scc' do
       'mostlyCycles_47_12800', 
       'mostlyCycles_48_12800', 
       'mostlyCycles_49_20000', 
-      'mostlyCycles_4_8', 
       'mostlyCycles_50_20000', 
       'mostlyCycles_51_20000', 
       'mostlyCycles_52_20000', 
@@ -188,7 +113,6 @@ describe 'scc' do
       'mostlyCycles_57_80000', 
       'mostlyCycles_58_80000', 
       'mostlyCycles_59_80000', 
-      'mostlyCycles_5_16', 
       'mostlyCycles_60_80000', 
       'mostlyCycles_61_160000', 
       'mostlyCycles_62_160000', 
@@ -197,11 +121,7 @@ describe 'scc' do
       'mostlyCycles_65_320000', 
       'mostlyCycles_66_320000', 
       'mostlyCycles_67_320000', 
-      'mostlyCycles_68_320000', 
-      'mostlyCycles_6_16', 
-      'mostlyCycles_7_16', 
-      'mostlyCycles_8_16', 
-      'mostlyCycles_9_32'
+      'mostlyCycles_68_320000'
     ]
 
     for e in examples
