@@ -40,34 +40,41 @@ def dijkstra(list)
 # graph.dijkstra_shortest_path(edge_weights, 1, 7)
 # [1, 8, 103, 84, 169, 100, 147, 120, 132, 16, 33, 7]
 
-  queue = [[1, 0]]
+  targets = [7,37,59,82,99,115,133,165,188,197]
+  results = []
 
-  visited = Set.new
-  result = 2 ** 32
+  for target in targets
+    queue = [[1, 0]]
 
-  while !queue.empty?
-    u, weight = queue.shift
+    visited = Set.new
+    result = 2 ** 32
 
-    if u == 7
-      result = [result, weight].min
-      next
+    while !queue.empty?
+      u, weight = queue.shift
+
+      if u == target
+        result = [result, weight].min
+        next
+      end
+
+      visited << u
+
+      # if v = (graph.adjacent_vertices(u) - visited.to_a).sort { |a,b| edge_weights[[u, a]] <=> edge_weights[[u, b]] }.first
+      #   stack << v
+      #   result += edge_weights[[u, v]]
+      # end
+
+      for nei in graph.adjacent_vertices(u)
+        next if visited.include?(nei)
+
+        queue << [nei, weight + edge_weights[[u, nei]]]
+      end
     end
 
-    visited << u
-
-    # if v = (graph.adjacent_vertices(u) - visited.to_a).sort { |a,b| edge_weights[[u, a]] <=> edge_weights[[u, b]] }.first
-    #   stack << v
-    #   result += edge_weights[[u, v]]
-    # end
-
-    for nei in graph.adjacent_vertices(u)
-      next if visited.include?(nei)
-
-      queue << [nei, weight + edge_weights[[u, nei]]]
-    end
+    results << result
   end
 
-  return result
+  return results
 end
 
 
@@ -82,7 +89,7 @@ describe 'dijkstra' do
   specify do
     examples = [
       'random_1_4',
-      # 'random_2_4',
+      'random_2_4',
       # 'random_3_4',
       # 'random_4_4',
       # 'random_5_8',
