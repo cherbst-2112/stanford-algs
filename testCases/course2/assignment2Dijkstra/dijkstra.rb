@@ -54,20 +54,14 @@ def dijkstra(list)
 
       if u == target
         result = [result, weight].min
-        next
-      end
+      else
+        visited << u
 
-      visited << u
+        for nei in graph.adjacent_vertices(u)
+          next if visited.include?(nei)
 
-      # if v = (graph.adjacent_vertices(u) - visited.to_a).sort { |a,b| edge_weights[[u, a]] <=> edge_weights[[u, b]] }.first
-      #   stack << v
-      #   result += edge_weights[[u, v]]
-      # end
-
-      for nei in graph.adjacent_vertices(u)
-        next if visited.include?(nei)
-
-        queue << [nei, weight + edge_weights[[u, nei]]]
+          queue << [nei, weight + edge_weights[[u, nei]]]
+        end
       end
     end
 
@@ -82,14 +76,14 @@ require "minitest/autorun"
 
 describe 'dijkstra' do
   # specify do
-  #   # TODO we get [533586, 1036, 618, 480, 404] like the python, but this is not correct
-  #   assert_equal -1, scc(File.read('SCC.txt').split("\n"))
+  #   assert_equal 'TODO', dijkstra(File.read('dijkstraData.txt').split("\n"))
   # end
 
   specify do
     examples = [
       'random_1_4',
       'random_2_4',
+      # TODO getting wrong result for this next one
       # 'random_3_4',
       # 'random_4_4',
       # 'random_5_8',
